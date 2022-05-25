@@ -37,15 +37,14 @@ function browsersync() {
 
 function scripts() {
   webpackConfig.mode = "development";
+  webpackConfig.devtool = "source-map";
   return src(["app/js/*.js", "!app/js/*.min.js"])
-    .pipe(sourcemaps.init())
     .pipe(webpackStream(webpackConfig, webpack))
     .on("error", (err) => {
       console.log("Webpack ERROR =>", err);
       this.emit("end");
     })
     .pipe(dest("app/js"))
-    .pipe(sourcemaps.write())
     .pipe(browserSync.stream());
 }
 
@@ -114,8 +113,7 @@ function buildcopy() {
       "app/fonts/**/*",
     ],
     { base: "app/" }
-  )
-    .pipe(dest("dist"));
+  ).pipe(dest("dist"));
 }
 
 async function buildhtml() {
@@ -152,7 +150,7 @@ export let build = series(
   scriptsBuild,
   stylesBuild,
   buildcopy,
-  buildhtml,
+  buildhtml
 );
 
 export default series(
